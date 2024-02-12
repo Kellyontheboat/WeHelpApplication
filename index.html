@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <link href="/style.css" rel="stylesheet">
+  <title>鄭克萱 - WeHelp Application</title>
+</head>
+
+<body>
+  <header>
+      <div class="container-fluid">
+        <h1 class="navbar-brand mb-0 h1 large-font">WeHelp申請表</h1>
+        <p> 申請者：鄭克萱 </p>
+      </div>
+  </header>
+
+  <div id="qa-container"></div>
+  
+  <!-- 問答內容 -->
+
+  <script id="qa-template">
+    // 選取欲放置問答的容器
+    const qaContainer = document.getElementById('qa-container');
+    let html = '';
+    // 拿取存於json檔中的問答
+    fetch('./qa.json')
+        .then(response => response.json())
+        .then(qaData => {
+          console.log(qaData)
+          // 將問答用for loop把各題帶入html
+          for(let i = 0; i < qaData.length; i ++){
+            html += `
+            <nav class="container">
+             <h4 class="medium-font">${qaData[i].question}<h4>
+             <p class="small-font json-content" align="justify">${qaData[i].answer}</p>
+             <hr>
+            </nav>
+            `
+          }
+          // 將所有問答的html放進容器中顯示
+          // 用正則表達式搜索json文檔,將URL的部分替換成hyperlink
+          qaContainer.innerHTML = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
+        })
+        .catch(error => console.error('Error fetching JSON:', error));
+  </script>
+</body>
+</html>
